@@ -1,3 +1,4 @@
 dependencies:
   python:
     - caldav
+    - datetime
