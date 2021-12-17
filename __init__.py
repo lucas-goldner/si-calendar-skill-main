@@ -8,16 +8,18 @@ class SiCalendar(MycroftSkill):
         self.events = []
         MycroftSkill.__init__(self)
 
-    @intent_file_handler('calendar.si.intent')
-    def return_appointment_for_Date(self, message):
+    
+   # def return_appointment_for_Date(self, message):
         #date = message.data('date')
         #events_fetched = my_new_calendar.date_search(
         #start=datetime(2021, 1, 1), end=datetime(2024, 1, 1), expand=True)
-        self.speak_dialog('calendar.si')
+        #self.speak_dialog('calendar.si')
     
+    @intent_file_handler('calendar.si.intent')
     def handle_calendar_si(self, message):
         self.get_calendar_events()
-        self.speak_dialog('calendar.si')
+        for event in self.events:
+            self.speak_dialog('calendar.si', data={'name': event.get("name"), 'date': event.get("date")})
 
     def get_calendar_events(self):
         principal = self.client.principal()
@@ -57,9 +59,9 @@ class SiCalendar(MycroftSkill):
                     minute = string_cut[doublepoint_index + 1:dtendindex][11:13]
                     self.events.append({"name": summary, "date":  hour + ":" + minute + "@" + day + "." + month + "." + year, "full-day": False})
 
-    @intent_file_handler('calendar.nextAppointment.intent')
-    def return_next_appointment(self, message):
-        self.speak_dialog('calendar.si')
+    #@intent_file_handler('calendar.nextAppointment.intent')
+    #def return_next_appointment(self, message):
+        #self.speak_dialog('calendar.si')
         
 def create_skill():
     return SiCalendar()
