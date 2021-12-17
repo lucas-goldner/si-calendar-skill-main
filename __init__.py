@@ -17,7 +17,7 @@ class SiCalendar(MycroftSkill):
                 line = line.strip()
                 listOfLines.append(line)
         self.client = caldav.DAVClient("https://nextcloud.humanoidlab.hdm-stuttgart.de/remote.php/dav", username=listOfLines[0], password=listOfLines[1])
-        self.speak_dialog('calendar.si', data = {"mail": listOfLines[0], "password": listOfLines[1]})
+        self.speak_dialog('calendar.si', data = {"email": listOfLines[0], "password": listOfLines[1]})
         #self.speak_dialog('calendar.si', data = {"date": nice_date(datetime.now())})
 
 
