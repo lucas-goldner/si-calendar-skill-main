@@ -9,7 +9,7 @@ class SiCalendar(MycroftSkill):
 
     @intent_file_handler('calendar.si.intent')
     def handle_calendar_si(self, message):
-        self.speak_dialog('calendar.si', data = {"date": nice_date(datetime.now().isoformat())})
+        self.speak_dialog('calendar.si', data = {"date": nice_date(datetime.now())})
 
 
 def create_skill():
