@@ -10,7 +10,7 @@ class SiCalendar(MycroftSkill):
 
     @intent_file_handler('calendar.si.intent')
     def handle_calendar_si(self, message):
-        filename = "/etc/si-calendar/cal_config.txt"
+        filename = "/etc/si-calendar/cal-config.txt"
         listOfLines=[]
         with open(filename,"r",encoding="uft-8") as fin:
             for line in fin:
