@@ -12,7 +12,7 @@ class SiCalendar(MycroftSkill):
     def handle_calendar_si(self, message):
         filename = "/etc/si-calendar/cal-config.txt"
         listOfLines=[]
-        with open(filename,"r",encoding="uft-8") as fin:
+        with open(filename,"r",encoding="utf-8") as fin:
             for line in fin:
                 line = line.strip()
                 listOfLines.append(line)
