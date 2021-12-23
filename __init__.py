@@ -17,6 +17,29 @@ class SiCalendar(MycroftSkill):
 
     @intent_file_handler('calendar.si.intent')
     def handle_calendar_si(self, message):
+        appointments = self.fetch_events()
+        #Filters for appointments that are sooner than the present date and orders them by occurence
+        sorted_appointments = sorted((d for d in appointments if d.get("date") > datetime.now()), key=lambda d: d['date'])
+
+        for ap in sorted_appointments:
+            if ap.get("type"):
+                self.speak_dialog('calendar.si', data = {"name": ap.get("name"), "date": nice_date(ap.get("date"))})
+            else:
+                self.speak_dialog('calendar.si', data = {"name": ap.get("name"), "date": nice_date_time(ap.get("date"))})      
+    
+    @intent_file_handler('today.si.intent')
+    def handle_today_si(self, message):
+        appointments = self.fetch_events()
+        #Filters for appointments that happen today and orders them by occurence
+        sorted_appointments = sorted((d for d in appointments if d.get("date").date() == datetime.today().date()), key=lambda d: d['date'])
+
+        for ap in sorted_appointments:
+            if ap.get("type"):
+                self.speak_dialog('calendar.si', data = {"name": ap.get("name"), "date": "today"})
+            else:
+                self.speak_dialog('calendar.si', data = {"name": ap.get("name"), "date": "at" + nice_date_time(ap.get("date"), use_ampm=True)})      
+
+    def fetch_events(self):
         appointments = []
         principal = self.client.principal()
         for calendar in principal.calendars():
@@ -61,18 +84,7 @@ class SiCalendar(MycroftSkill):
                     date_time_obj = datetime.strptime(date_time_str, '%d/%m/%Y %H:%M')
                     appointments.append({"name": summary, "date": date_time_obj, "type": is_full_day})
 
-        #Filters for appointments that are sooner than the present date and orders them by occurence
-        sorted_appointments = sorted((d for d in appointments if d.get("date") > datetime.now()), key=lambda d: d['date'])
-
-        for ap in sorted_appointments:
-            if ap.get("type"):
-                self.speak_dialog('calendar.si', data = {"name": ap.get("name"), "date": nice_date(ap.get("date"))})
-            else:
-                self.speak_dialog('calendar.si', data = {"name": ap.get("name"), "date": nice_date_time(ap.get("date"))})      
-    
-    @intent_file_handler('today.si.intent')
-    def handle_today_si(self, message):  
-        self.speak_dialog('today.si') 
+        return appointments
       
 def create_skill():
     return SiCalendar()
