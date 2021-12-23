@@ -7,18 +7,18 @@ import caldav
 class SiCalendar(MycroftSkill):
     def __init__(self):
         MycroftSkill.__init__(self)
+
+    @intent_file_handler('calendar.si.intent')
+    def handle_calendar_si(self, message):
+        appointments = []
         filename = "/etc/si-calendar/cal-config.txt"
         listOfLines=[]
         with open(filename,"r",encoding="utf-8") as fin:
             for line in fin:
                 line = line.strip()
                 listOfLines.append(line)
-        self.client = caldav.DAVClient("https://nextcloud.humanoidlab.hdm-stuttgart.de/remote.php/dav", username=listOfLines[0], password=listOfLines[1])
-
-    @intent_file_handler('calendar.si.intent')
-    def handle_calendar_si(self, message):
-        appointments = []
-        principal = self.client.principal()
+        client = caldav.DAVClient("https://nextcloud.humanoidlab.hdm-stuttgart.de/remote.php/dav", username=listOfLines[0], password=listOfLines[1])
+        principal = client.principal()
         for calendar in principal.calendars():
             for event in calendar.events():
                 ical_text = event.data
