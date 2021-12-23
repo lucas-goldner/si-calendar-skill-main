@@ -58,7 +58,7 @@ class SiCalendar(MycroftSkill):
                     hour = string_cut[doublepoint_index + 1:dtendindex][9:11]
                     minute = string_cut[doublepoint_index + 1:dtendindex][11:13]
                     date_time_str = day + "/" + month + "/" + year + " " + hour + ":" + minute
-                    date_time_obj = datetime.strptime(date_time_str, '%d/%m/%y %H:%M')
+                    date_time_obj = datetime.strptime(date_time_str, '%d/%m/%Y %H:%M')
                     appointments.append({"name": summary, "date": date_time_obj})
 
         #self.speak_dialog('calendar.si', data = {"email": listOfLines[0], "password": listOfLines[1]})
