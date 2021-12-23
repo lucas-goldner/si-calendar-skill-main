@@ -61,10 +61,10 @@ class SiCalendar(MycroftSkill):
                     date_time_obj = datetime.strptime(date_time_str, '%d/%m/%Y %H:%M')
                     appointments.append({"name": summary, "date": date_time_obj})
 
-        #self.speak_dialog('calendar.si', data = {"email": listOfLines[0], "password": listOfLines[1]})
-        #self.speak_dialog('calendar.si', data = {"date": nice_date(datetime.now())})
+        #Filters for appointments that are sooner than the present date and orders them by occurence
+        sorted_appointments = sorted((d for d in appointments if d.get("date") > datetime.now()), key=lambda d: d['date'])
 
-        for ap in appointments:
+        for ap in sorted_appointments:
             self.speak_dialog('calendar.si', data = {"name": ap.get("name"), "date": nice_date(ap.get("date"))})
                 
 
