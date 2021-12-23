@@ -68,10 +68,12 @@ class SiCalendar(MycroftSkill):
             if ap.get("type"):
                 self.speak_dialog('calendar.si', data = {"name": ap.get("name"), "date": nice_date(ap.get("date"))})
             else:
-                self.speak_dialog('calendar.si', data = {"name": ap.get("name"), "date": nice_date_time(ap.get("date"))})
-                
-
-
+                self.speak_dialog('calendar.si', data = {"name": ap.get("name"), "date": nice_date_time(ap.get("date"))})      
+    
+    @intent_file_handler('today.si.intent')
+    def handle_today_si(self, message):  
+        self.speak_dialog('today.si') 
+      
 def create_skill():
     return SiCalendar()
 
