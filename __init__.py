@@ -1,5 +1,5 @@
 from mycroft import MycroftSkill, intent_file_handler
-from mycroft.util.format import nice_time, nice_date
+from mycroft.util.format import nice_time, nice_date, nice_date_time
 from datetime import datetime, date
 import caldav
 
@@ -50,7 +50,7 @@ class SiCalendar(MycroftSkill):
                     day = ical_text[dtstartindex + 11:dtendindex][6:8]
                     date_time_str = day + "/" + month + "/" + year
                     date_time_obj = datetime.strptime(date_time_str, '%d/%m/%Y')
-                    appointments.append({"name": summary, "date": date_time_obj})
+                    appointments.append({"name": summary, "date": date_time_obj, "type": is_full_day})
                 else:
                     year = string_cut[doublepoint_index + 1:dtendindex][:4]
                     month = string_cut[doublepoint_index + 1:dtendindex][4:6]
@@ -59,13 +59,16 @@ class SiCalendar(MycroftSkill):
                     minute = string_cut[doublepoint_index + 1:dtendindex][11:13]
                     date_time_str = day + "/" + month + "/" + year + " " + hour + ":" + minute
                     date_time_obj = datetime.strptime(date_time_str, '%d/%m/%Y %H:%M')
-                    appointments.append({"name": summary, "date": date_time_obj})
+                    appointments.append({"name": summary, "date": date_time_obj, "type": is_full_day})
 
         #Filters for appointments that are sooner than the present date and orders them by occurence
         sorted_appointments = sorted((d for d in appointments if d.get("date") > datetime.now()), key=lambda d: d['date'])
 
         for ap in sorted_appointments:
-            self.speak_dialog('calendar.si', data = {"name": ap.get("name"), "date": nice_date(ap.get("date"))})
+            if ap.get("type"):
+                self.speak_dialog('calendar.si', data = {"name": ap.get("name"), "date": nice_date(ap.get("date"))})
+            else:
+                self.speak_dialog('calendar.si', data = {"name": ap.get("name"), "date": nice_date_time(ap.get("date"))})
                 
 
 
