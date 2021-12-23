@@ -37,7 +37,7 @@ class SiCalendar(MycroftSkill):
             if ap.get("type"):
                 self.speak_dialog('calendar.si', data = {"name": ap.get("name"), "date": "today"})
             else:
-                self.speak_dialog('calendar.si', data = {"name": ap.get("name"), "date": "at " + nice_time(ap.get("date"), use_ampm=True)})      
+                self.speak_dialog('calendar.si', data = {"name": ap.get("name"), "date": nice_time(ap.get("date"), use_ampm=True)})      
 
     def fetch_events(self):
         appointments = []
