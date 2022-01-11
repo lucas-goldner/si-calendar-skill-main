@@ -15,7 +15,7 @@ class SiCalendar(MycroftSkill):
                 listOfLines.append(line)
         self.client = caldav.DAVClient("https://nextcloud.humanoidlab.hdm-stuttgart.de/remote.php/dav", username=listOfLines[0], password=listOfLines[1])
 
-    @intent_file_handler('calendar.si.intent')
+    @intent_file_handler('multipleAppointments.si.intent')
     def handle_calendar_si(self, message):
         appointments = self.fetch_events()
         #Filters for appointments that are sooner than the present date and orders them by occurence
@@ -25,9 +25,34 @@ class SiCalendar(MycroftSkill):
             if ap.get("type"):
                 self.speak_dialog('calendar.si', data = {"name": ap.get("name"), "date": nice_date(ap.get("date"))})
             else:
-                self.speak_dialog('calendar.si', data = {"name": ap.get("name"), "date": nice_date_time(ap.get("date"))})      
-    
-    @intent_file_handler('today.si.intent')
+                self.speak_dialog('calendar.si', data = {"name": ap.get("name"), "date": nice_date_time(ap.get("date"))})   
+
+    @intent_file_handler('nextAppointment.si.intent')
+    def handle_calendar_si(self, message):
+        appointments = self.fetch_events()
+        #Filters for appointments that are sooner than the present date and orders them by occurence
+        sorted_appointments = sorted((d for d in appointments if d.get("date") > datetime.now()), key=lambda d: d['date'])
+
+        firstAppointment = sorted_appointments[0]
+        #if we got a appoinment with exact time we pass it, otherwise we check if the full day event is already running today
+        if firstAppointment.get("type"):
+            if firstAppointment.get("date").date() == datetime.today().date(): 
+                #checking for next appointment, if there is one, running one is declared as next
+                if len(sorted_appointments)>1:
+                    firstAppointment = sorted_appointments[1]
+                    #choosing form depending on fulldaytype
+                    if firstAppointment.get("type"):
+                        self.speak_dialog('calendar.si', data = {"name": firstAppointment.get("name"), "date": nice_date(firstAppointment.get("date"))})
+                    else:
+                        self.speak_dialog('calendar.si', data = {"name": firstAppointment.get("name"), "date": nice_date_time(firstAppointment.get("date"))})
+                else:
+                    self.speak_dialog('calendar.si', data = {"name": firstAppointment.get("name"), "date": nice_date(firstAppointment.get("date"))})
+            else:
+                self.speak_dialog('calendar.si', data = {"name": firstAppointment.get("name"), "date": nice_date(firstAppointment.get("date"))})
+        else:
+            self.speak_dialog('calendar.si', data = {"name": firstAppointment.get("name"), "date": nice_date_time(firstAppointment.get("date"))})
+
+    @intent_file_handler('specificDay.si.intent')
     def handle_today_si(self, message):
         appointments = self.fetch_events()
         #Filters for appointments that happen today and orders them by occurence
