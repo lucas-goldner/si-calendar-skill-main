@@ -1,5 +1,6 @@
 from mycroft import MycroftSkill, intent_file_handler
 from mycroft.util.format import nice_time, nice_date, nice_date_time
+from mycroft.util.parse import extract_datetime
 from datetime import datetime, date
 import caldav
 
@@ -15,8 +16,8 @@ class SiCalendar(MycroftSkill):
                 listOfLines.append(line)
         self.client = caldav.DAVClient("https://nextcloud.humanoidlab.hdm-stuttgart.de/remote.php/dav", username=listOfLines[0], password=listOfLines[1])
 
-    @intent_file_handler('calendar.si.intent')
-    def handle_calendar_si(self, message):
+    @intent_file_handler('multipleAppointments.si.intent')
+    def handle_multiple(self, message):
         appointments = self.fetch_events()
         #Filters for appointments that are sooner than the present date and orders them by occurence
         sorted_appointments = sorted((d for d in appointments if d.get("date") > datetime.now()), key=lambda d: d['date'])
@@ -30,7 +31,7 @@ class SiCalendar(MycroftSkill):
                 else:
                     self.speak_dialog('calendar.si', data = {"name": ap.get("name"), "date": nice_date_time(ap.get("date"))})      
     
-    @intent_file_handler('today.si.intent')
+    @intent_file_handler('specificDay.si.si.intent')
     def handle_today_si(self, message):
         appointments = self.fetch_events()
         #Filters for appointments that happen today and orders them by occurence
