@@ -21,11 +21,14 @@ class SiCalendar(MycroftSkill):
         #Filters for appointments that are sooner than the present date and orders them by occurence
         sorted_appointments = sorted((d for d in appointments if d.get("date") > datetime.now()), key=lambda d: d['date'])
 
-        for ap in sorted_appointments:
-            if ap.get("type"):
-                self.speak_dialog('calendar.si', data = {"name": ap.get("name"), "date": nice_date(ap.get("date"))})
-            else:
-                self.speak_dialog('calendar.si', data = {"name": ap.get("name"), "date": nice_date_time(ap.get("date"))})      
+        if(len(sorted_appointments) == 0):
+            self.speak_dialog('no_appointment.si')
+        else:
+            for ap in sorted_appointments:
+                if ap.get("type"):
+                    self.speak_dialog('calendar.si', data = {"name": ap.get("name"), "date": nice_date(ap.get("date"))})
+                else:
+                    self.speak_dialog('calendar.si', data = {"name": ap.get("name"), "date": nice_date_time(ap.get("date"))})      
     
     @intent_file_handler('today.si.intent')
     def handle_today_si(self, message):
@@ -33,11 +36,14 @@ class SiCalendar(MycroftSkill):
         #Filters for appointments that happen today and orders them by occurence
         sorted_appointments = sorted((d for d in appointments if d.get("date").date() == datetime.today().date()), key=lambda d: d['date'])
 
-        for ap in sorted_appointments:
-            if ap.get("type"):
-                self.speak_dialog('calendar.si', data = {"name": ap.get("name"), "date": "today"})
-            else:
-                self.speak_dialog('calendar.si', data = {"name": ap.get("name"), "date": nice_time(ap.get("date"), use_ampm=True)})      
+        if(len(sorted_appointments) == 0):
+            self.speak_dialog('no_appointment.si')
+        else:
+            for ap in sorted_appointments:
+                if ap.get("type"):
+                    self.speak_dialog('calendar.si', data = {"name": ap.get("name"), "date": "today"})
+                else:
+                    self.speak_dialog('calendar.si', data = {"name": ap.get("name"), "date": nice_time(ap.get("date"), use_ampm=True)})
 
     def fetch_events(self):
         appointments = []
