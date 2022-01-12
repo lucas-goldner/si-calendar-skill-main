@@ -15,6 +15,11 @@ class SiCalendar(MycroftSkill):
                 listOfLines.append(line)
         self.client = caldav.DAVClient("https://nextcloud.humanoidlab.hdm-stuttgart.de/remote.php/dav", username=listOfLines[0], password=listOfLines[1])
 
+    @intent_file_handler('specific.si.intent')
+    def handle_calendar_si(self, message):
+        self.speak_dialog("Querried day is " + extract_datetime(message))
+
+
     @intent_file_handler('calendar.si.intent')
     def handle_calendar_si(self, message):
         appointments = self.fetch_events()
