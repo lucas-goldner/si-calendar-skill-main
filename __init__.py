@@ -16,7 +16,7 @@ class SiCalendar(MycroftSkill):
                 listOfLines.append(line)
         self.client = caldav.DAVClient("https://nextcloud.humanoidlab.hdm-stuttgart.de/remote.php/dav", username=listOfLines[0], password=listOfLines[1])
 
-    @intent_file_handler('multipleAppointments.si.intent')
+    @intent_file_handler('calendar.si.intent')
     def handle_multiple(self, message):
         appointments = self.fetch_events()
         #Filters for appointments that are sooner than the present date and orders them by occurence
