@@ -47,8 +47,8 @@ class SiCalendar(MycroftSkill):
                 else:
                     self.speak_dialog('calendar.si', data = {"name": ap.get("name"), "date": nice_date_time(ap.get("date"))})      
     
-    @intent_file_handler('today.si.intent')
-    def handle_today_si(self, message):
+    @intent_file_handler('next.si.intent')
+    def handle_next_si(self, message):
         appointments = self.fetch_events()
         #Filters for appointments that happen today and orders them by occurence
         sorted_appointments = sorted((d for d in appointments if d.get("date").date() == datetime.today().date()), key=lambda d: d['date'])
