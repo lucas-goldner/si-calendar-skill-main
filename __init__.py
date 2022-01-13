@@ -16,7 +16,7 @@ class SiCalendar(MycroftSkill):
         self.client = caldav.DAVClient("https://nextcloud.humanoidlab.hdm-stuttgart.de/remote.php/dav", username=listOfLines[0], password=listOfLines[1])
 
     @intent_file_handler('specific.si.intent')
-    def handle_calendar_si(self, message):
+    def handle_specific_si(self, message):
         self.speak_dialog(message)
 
 
