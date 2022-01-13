@@ -32,8 +32,8 @@ class SiCalendar(MycroftSkill):
                 else:
                     self.speak_dialog('calendar.si', data = {"name": ap.get("name"), "date": nice_date_time(ap.get("date"))})
 
-    @intent_file_handler('calendar.si.intent')
-    def handle_calendar_si(self, message):
+    @intent_file_handler('multiple.si.intent')
+    def handle_multiple_si(self, message):
         appointments = self.fetch_events()
         #Filters for appointments that are sooner than the present date and orders them by occurence
         sorted_appointments = sorted((d for d in appointments if d.get("date") > datetime.now()), key=lambda d: d['date'])
