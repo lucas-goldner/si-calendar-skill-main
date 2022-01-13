@@ -20,12 +20,8 @@ class SiCalendar(MycroftSkill):
     def handle_specific_si(self, message):
         date, text_remainder = extract_datetime(message.data["utterance"], lang=self.lang)
         appointments = self.fetch_events()
-        # Timezone info of your timezone aware variable
-        timezone = date.tzinfo
-        # Current datetime for the timezone of your variable
-        now_in_timezone = datetime.now(timezone)
 
-        sorted_appointments = sorted((d for d in appointments if date.date() == datetime.today().date()), key=lambda d: d['date'])
+        sorted_appointments = sorted((d for d in appointments if d.date() == date.date()), key=lambda d: d['date'])
 
         if(len(sorted_appointments) == 0):
             self.speak_dialog('no_appointment.si')
