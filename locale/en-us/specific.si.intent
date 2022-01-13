@@ -1,3 +1,2 @@
-Say the date for {date}
-Schedule for {date}
-Schedule say {date}
+What are the events (for|on) {date}
+Schedule (for|on) {date}
