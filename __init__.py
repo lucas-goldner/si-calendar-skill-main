@@ -17,7 +17,7 @@ class SiCalendar(MycroftSkill):
 
     @intent_file_handler('specific.si.intent')
     def handle_calendar_si(self, message):
-        self.speak_dialog("Querried day is " + extract_datetime(message))
+        self.speak_dialog(message)
 
 
     @intent_file_handler('calendar.si.intent')
