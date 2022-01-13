@@ -23,7 +23,7 @@ class SiCalendar(MycroftSkill):
         # Timezone info of your timezone aware variable
         timezone = date.tzinfo
         # Current datetime for the timezone of your variable
-        now_in_timezone = datetime.datetime.now(timezone)
+        now_in_timezone = datetime.now(timezone)
 
         sorted_appointments = sorted((d for d in appointments if date > now_in_timezone), key=lambda d: d['date'])
 
