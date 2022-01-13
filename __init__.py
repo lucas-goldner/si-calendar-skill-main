@@ -53,14 +53,25 @@ class SiCalendar(MycroftSkill):
         #Filters for appointments that happen today and orders them by occurence
         sorted_appointments = sorted((d for d in appointments if d.get("date").date() == datetime.today().date()), key=lambda d: d['date'])
 
+        #Next event prioritizes events that are scheduled at an exact time, instead of full day events
         if(len(sorted_appointments) == 0):
             self.speak_dialog('no_appointment.si')
         else:
-            for ap in sorted_appointments:
-                if ap.get("type"):
-                    self.speak_dialog('calendar.si', data = {"name": ap.get("name"), "date": "today"})
+            firstAppointment = sorted_appointments[0]
+            #Check if next event is full day
+            if firstAppointment.get("type"):
+                #Check if there is another event in the future
+                if len(sorted_appointments) > 1:
+                    #If next event is also a full day event it will be also chosen 
+                    firstAppointment = sorted_appointments[1]
+                    if firstAppointment.get("type"):
+                        self.speak_dialog('calendar.si', data = {"name": firstAppointment.get("name"), "date": nice_date(firstAppointment.get("date"))})
+                    else:
+                        self.speak_dialog('calendar.si', data = {"name": firstAppointment.get("name"), "date": nice_date_time(firstAppointment.get("date"))})
                 else:
-                    self.speak_dialog('calendar.si', data = {"name": ap.get("name"), "date": nice_time(ap.get("date"), use_ampm=True)})
+                    self.speak_dialog('calendar.si', data = {"name": ap.get("name"), "date": "today"})
+            else:
+                self.speak_dialog('calendar.si', data = {"name": ap.get("name"), "date": "today"})
 
     def fetch_events(self):
         appointments = []
