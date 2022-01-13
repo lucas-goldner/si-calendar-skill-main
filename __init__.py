@@ -19,11 +19,16 @@ class SiCalendar(MycroftSkill):
     @intent_file_handler('specific.si.intent')
     def handle_specific_si(self, message):
         date, text_remainder = extract_datetime(message.data["utterance"], lang=self.lang)
-        # speak it
-        self.speak_dialog("specific.si", {"date": nice_date(date)})
-        #date, text_remainder = extract_datetime(message.data["utterance"], lang=self.lang)
-        #self.speak_dialog(message)
+        sorted_appointments = sorted((d for d in appointments if date > datetime.now()), key=lambda d: d['date'])
 
+        if(len(sorted_appointments) == 0):
+            self.speak_dialog('no_appointment.si')
+        else:
+            for ap in sorted_appointments:
+                if ap.get("type"):
+                    self.speak_dialog('calendar.si', data = {"name": ap.get("name"), "date": nice_date(ap.get("date"))})
+                else:
+                    self.speak_dialog('calendar.si', data = {"name": ap.get("name"), "date": nice_date_time(ap.get("date"))})
 
     @intent_file_handler('calendar.si.intent')
     def handle_calendar_si(self, message):
