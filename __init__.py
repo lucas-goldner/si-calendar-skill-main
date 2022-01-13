@@ -25,7 +25,7 @@ class SiCalendar(MycroftSkill):
         # Current datetime for the timezone of your variable
         now_in_timezone = datetime.now(timezone)
 
-        sorted_appointments = sorted((d for d in appointments if date > now_in_timezone), key=lambda d: d['date'])
+        sorted_appointments = sorted((d for d in appointments if date.date().day == datetime.today().date().day), key=lambda d: d['date'])
 
         if(len(sorted_appointments) == 0):
             self.speak_dialog('no_appointment.si')
