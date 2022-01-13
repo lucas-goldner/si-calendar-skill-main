@@ -21,7 +21,7 @@ class SiCalendar(MycroftSkill):
         date, text_remainder = extract_datetime(message.data["utterance"], lang=self.lang)
         appointments = self.fetch_events()
 
-        sorted_appointments = sorted((d for d in appointments if d.date() == date.date()), key=lambda d: d['date'])
+        sorted_appointments = sorted((d for d in appointments if d.date() == date), key=lambda d: d['date'])
 
         if(len(sorted_appointments) == 0):
             self.speak_dialog('no_appointment.si')
