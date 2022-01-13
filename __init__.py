@@ -18,10 +18,9 @@ class SiCalendar(MycroftSkill):
 
     @intent_file_handler('specific.si.intent')
     def handle_specific_si(self, message):
-        utt = normalize(message.data.get('utterance', "").lower())
-        extract = extract_datetime(utt)
+        date, text_remainder = extract_datetime(message.data["utterance"], lang=self.lang)
         # speak it
-        self.speak_dialog("specific.si", {"date": nice_date(extract)})
+        self.speak_dialog("specific.si", {"date": nice_date(date)})
         #date, text_remainder = extract_datetime(message.data["utterance"], lang=self.lang)
         #self.speak_dialog(message)
 
