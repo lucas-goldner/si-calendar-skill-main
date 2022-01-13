@@ -1,5 +1,6 @@
 from mycroft import MycroftSkill, intent_file_handler
 from mycroft.util.format import nice_time, nice_date, nice_date_time
+from mycroft.util.parse import extract_datetime, normalize
 from datetime import datetime, date
 import caldav
 
@@ -17,7 +18,12 @@ class SiCalendar(MycroftSkill):
 
     @intent_file_handler('specific.si.intent')
     def handle_specific_si(self, message):
-        self.speak_dialog(message)
+        utt = normalize(message.data.get('utterance', "").lower())
+        extract = extract_datetime(utt)
+        # speak it
+        self.speak_dialog("specific.si", {"date": nice_date(extract)})
+        #date, text_remainder = extract_datetime(message.data["utterance"], lang=self.lang)
+        #self.speak_dialog(message)
 
 
     @intent_file_handler('calendar.si.intent')
