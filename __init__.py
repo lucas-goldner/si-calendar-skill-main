@@ -19,6 +19,7 @@ class SiCalendar(MycroftSkill):
     @intent_file_handler('specific.si.intent')
     def handle_specific_si(self, message):
         date, text_remainder = extract_datetime(message.data["utterance"], lang=self.lang)
+        appointments = self.fetch_events()
         sorted_appointments = sorted((d for d in appointments if date > datetime.now()), key=lambda d: d['date'])
 
         if(len(sorted_appointments) == 0):
