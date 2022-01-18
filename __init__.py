@@ -3,6 +3,7 @@ from mycroft.util.format import nice_time, nice_date, nice_date_time
 from mycroft.util.parse import extract_datetime, normalize
 from datetime import datetime, date
 import caldav
+import os
 
 
 class SiCalendar(MycroftSkill):
@@ -14,7 +15,17 @@ class SiCalendar(MycroftSkill):
             for line in fin:
                 line = line.strip()
                 listOfLines.append(line)
+        self.mail = listOfLines[0]
         self.client = caldav.DAVClient("https://nextcloud.humanoidlab.hdm-stuttgart.de/remote.php/dav", username=listOfLines[0], password=listOfLines[1])
+
+    @intent_file_handler('specific.si.intent')
+    def add_event_si(self, message):
+        summary = message.data.get('summary', None)
+        if summary is None:
+            self.speak_dialog('add_no_summary.si')
+        else:
+            date, text_remainder = extract_datetime(message.data["utterance"], lang=self.lang)
+            self.speak_dialog('calendar.si', data = {"name": summary, "date": nice_date_time(date)})
 
     @intent_file_handler('specific.si.intent')
     def handle_specific_si(self, message):
@@ -119,6 +130,94 @@ class SiCalendar(MycroftSkill):
                     appointments.append({"name": summary, "date": date_time_obj, "type": is_full_day})
 
         return appointments
+    
+    def create_ics(self, summary, startdate, enddate):
+        #default ICS Layout
+        ics = """
+        BEGIN:VCALENDAR
+        PRODID:-//IDN nextcloud.com//Calendar app 2.3.3//EN
+        CALSCALE:GREGORIAN
+        VERSION:2.0
+        BEGIN:VEVENT
+        CREATED:20220112T154856Z
+        DTSTAMP:20220112T154904Z
+        LAST-MODIFIED:20220112T154904Z
+        SEQUENCE:4
+        UID:693bae92-5a23-410d-8ae1-a589d77e0844
+        DTSTART;VALUE=DATE:20220112
+        DTEND;VALUE=DATE:20220113
+        SUMMARY:Fix mycroft
+        END:VEVENT
+        END:VCALENDAR
+        """
+        createdtime = datetime.now().strftime('%Y%m%dT%H%M%SZ')
+        uid = createdtime + "@" + self.mail
+        #Means it is a full day event
+        if enddate is None:
+            ics = ics.replace(ics[ics.index("CREATED:")+8: ics.index("DTSTAMP")], createdtime+"\n")
+            ics = ics.replace(ics[ics.index("DTSTAMP:")+8: ics.index("LAST-MODIFIED")], createdtime+"\n")
+            ics = ics.replace(ics[ics.index("UID:")+4: ics.index("DTSTART;VALUE=DATE:")], uid +"\n")
+            ics = ics.replace(ics[ics.index("DTSTART;VALUE=DATE:")+19: ics.index("DTEND;VALUE=DATE:")], self.formatDateTime(startdate)+"\n")
+            ics = ics.replace(ics[ics.index("DTEND;VALUE=DATE:")+17: ics.index("SUMMARY:")], self.formatDateTime(startdate)+"\n")
+            ics = ics.replace(ics[ics.index("SUMMARY:")+8: ics.index("END:")], summary+"\n")
+            return ics
+        else:    
+            ics = """BEGIN:VCALENDAR
+            PRODID:-//IDN nextcloud.com//Calendar app 2.3.3//EN
+            CALSCALE:GREGORIAN
+            VERSION:2.0
+            BEGIN:VEVENT
+            CREATED:20211223T182215Z
+            DTSTAMP:20211223T182255Z
+            LAST-MODIFIED:20211223T182255Z
+            SEQUENCE:2
+            UID:715edfc1-6ddb-40e8-beb9-a77643d6168d
+            DTSTART;TZID=Europe/Berlin:20211228T005500
+            DTEND;TZID=Europe/Berlin:20211228T015500
+            SUMMARY:Booster Vaccine
+            END:VEVENT
+            BEGIN:VTIMEZONE
+            TZID:Europe/Berlin
+            BEGIN:DAYLIGHT
+            TZOFFSETFROM:+0100
+            TZOFFSETTO:+0200
+            TZNAME:CEST
+            DTSTART:19700329T020000
+            RRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=-1SU
+            END:DAYLIGHT
+            BEGIN:STANDARD
+            TZOFFSETFROM:+0200
+            TZOFFSETTO:+0100
+            TZNAME:CET
+            DTSTART:19701025T030000
+            RRULE:FREQ=YEARLY;BYMONTH=10;BYDAY=-1SU
+            END:STANDARD
+            END:VTIMEZONE
+            END:VCALENDAR
+            """
+            local_timezone = '/'.join(os.path.realpath('/etc/localtime').split('/')[-2:]) 
+            starttime = startdate.strftime('%Y%m%dT%H%M%S')
+            endtime = enddate.strftime('%Y%m%dT%H%M%S')
+
+            ics = ics.replace(ics[ics.index("CREATED:")+8: ics.index("DTSTAMP")], createdtime+"\n")
+            ics = ics.replace(ics[ics.index("DTSTAMP:")+8: ics.index("LAST-MODIFIED")], createdtime+"\n")
+            ics = ics.replace(ics[ics.index("UID:")+4: ics.index("DTSTART;")], uid +"\n")
+            ics = ics.replace(ics[ics.index("DTSTART;TZID="+ local_timezone+":")+14+len(local_timezone): ics.index("DTEND;TZID=")], starttime+"\n")
+            ics = ics.replace(ics[ics.index("DTEND;TZID="+local_timezone+":")+12+len(local_timezone): ics.index("SUMMARY")], endtime+"\n")
+            ics = ics.replace(ics[ics.index("SUMMARY:")+8: ics.index("END:")], summary+"\n")
+            ics = ics.replace(ics[ics.index("TZID:")+5: ics.index("TZID:")+5+len(local_timezone)], local_timezone)
+            return ics
+    
+    def formatDateTime(datetime):
+        year = str(datetime.date().year)
+        month = str(datetime.date().month) 
+        day = str(datetime.date().day)
+        if len(month) == 1:
+            month = "0" + month
+        if len(day) == 1:
+            day = "0" + day
+        return year + month + day
+       
       
 def create_skill():
     return SiCalendar()
