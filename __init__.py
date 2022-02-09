@@ -25,6 +25,7 @@ class SiCalendar(MycroftSkill):
             self.speak_dialog('add_no_summary.si')
         else:
             date, text_remainder = extract_datetime(message.data["utterance"], lang=self.lang)
+            create_ics(summary, date, date)
             self.speak_dialog('add.si', data = {"name": summary, "date": nice_date_time(date)})
 
     @intent_file_handler('specific.si.intent')
