@@ -18,7 +18,7 @@ class SiCalendar(MycroftSkill):
         self.mail = listOfLines[0]
         self.client = caldav.DAVClient("https://nextcloud.humanoidlab.hdm-stuttgart.de/remote.php/dav", username=listOfLines[0], password=listOfLines[1])
 
-    @intent_file_handler('specific.si.intent')
+    @intent_file_handler('add.si.intent')
     def add_event_si(self, message):
         summary = message.data.get('summary', None)
         if summary is None:
