@@ -166,7 +166,8 @@ class SiCalendar(MycroftSkill):
             ics = ics.replace(ics[ics.index("SUMMARY:")+8: ics.index("END:")], summary+"\n")
             return ics
         else:    
-            ics = """BEGIN:VCALENDAR
+            ics = """
+            BEGIN:VCALENDAR
             PRODID:-//IDN nextcloud.com//Calendar app 2.3.3//EN
             CALSCALE:GREGORIAN
             VERSION:2.0
