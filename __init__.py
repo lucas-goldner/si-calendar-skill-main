@@ -26,10 +26,11 @@ class SiCalendar(MycroftSkill):
         else:
             date, text_remainder = extract_datetime(message.data["utterance"], lang=self.lang)
             created_ics = self.create_ics(summary, date, None)
-            principal = self.client.principal()
-            calendar = principal.calendars()[0]
-            calendar.save_event(created_ics)
-            self.speak_dialog('add.si', data = {"name": summary, "date": nice_date_time(date)})
+            self.speak_dialog(created_ics)
+            #principal = self.client.principal()
+            #calendar = principal.calendars()[0]
+            #calendar.save_event(created_ics)
+            #self.speak_dialog('add.si', data = {"name": summary, "date": nice_date_time(date)})
 
     @intent_file_handler('specific.si.intent')
     def handle_specific_si(self, message):
