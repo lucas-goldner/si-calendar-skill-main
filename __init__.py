@@ -19,13 +19,16 @@ class SiCalendar(MycroftSkill):
         self.client = caldav.DAVClient("https://nextcloud.humanoidlab.hdm-stuttgart.de/remote.php/dav", username=listOfLines[0], password=listOfLines[1])
 
     @intent_file_handler('add.si.intent')
-    def add_event_si(self, message):
+    def handle_add_si(self, message):
         summary = message.data.get('summary', None)
         if summary is None:
             self.speak_dialog('add_no_summary.si')
         else:
             date, text_remainder = extract_datetime(message.data["utterance"], lang=self.lang)
-            self.create_ics(summary, date, None)
+            created_ics = self.create_ics(summary, date, None)
+            principal = self.client.principal()
+            calendar = principal.calendars()[0]
+            calendar.save_event(created_ics)
             self.speak_dialog('add.si', data = {"name": summary, "date": nice_date_time(date)})
 
     @intent_file_handler('specific.si.intent')
