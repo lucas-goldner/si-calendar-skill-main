@@ -209,7 +209,7 @@ class SiCalendar(MycroftSkill):
             ics = ics.replace(ics[ics.index("TZID:")+5: ics.index("TZID:")+5+len(local_timezone)], local_timezone)
             return ics
     
-    def formatDateTime(datetime):
+    def formatDateTime(self, datetime):
         year = str(datetime.date().year)
         month = str(datetime.date().month) 
         day = str(datetime.date().day)
