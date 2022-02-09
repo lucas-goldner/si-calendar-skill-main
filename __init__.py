@@ -26,11 +26,10 @@ class SiCalendar(MycroftSkill):
         else:
             date, text_remainder = extract_datetime(message.data["utterance"], lang=self.lang)
             created_ics = self.create_ics(summary, date, None)
-            self.speak_dialog(created_ics)
-            #principal = self.client.principal()
-            #calendar = principal.calendars()[0]
-            #calendar.save_event(created_ics)
-            #self.speak_dialog('add.si', data = {"name": summary, "date": nice_date_time(date)})
+            principal = self.client.principal()
+            calendar = principal.calendars()[0]
+            calendar.save_event(created_ics)
+            self.speak_dialog('add.si', data = {"name": summary, "date": nice_date_time(date)})
 
     @intent_file_handler('specific.si.intent')
     def handle_specific_si(self, message):
@@ -151,7 +150,7 @@ class SiCalendar(MycroftSkill):
         UID:693bae92-5a23-410d-8ae1-a589d77e0844
         DTSTART;VALUE=DATE:20220112
         DTEND;VALUE=DATE:20220113
-        SUMMARY:Fix mycroft
+        SUMMARY:Full day event
         END:VEVENT
         END:VCALENDAR
         """
@@ -180,7 +179,7 @@ class SiCalendar(MycroftSkill):
             UID:715edfc1-6ddb-40e8-beb9-a77643d6168d
             DTSTART;TZID=Europe/Berlin:20211228T005500
             DTEND;TZID=Europe/Berlin:20211228T015500
-            SUMMARY:Booster Vaccine
+            SUMMARY:Specific time event
             END:VEVENT
             BEGIN:VTIMEZONE
             TZID:Europe/Berlin
