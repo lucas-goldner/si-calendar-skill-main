@@ -26,9 +26,26 @@ class SiCalendar(MycroftSkill):
         else:
             date, text_remainder = extract_datetime(message.data["utterance"], lang=self.lang)
             created_ics = self.create_ics(summary, date, None)
+            this_ics = """
+            BEGIN:VCALENDAR
+            PRODID:-//IDN nextcloud.com//Calendar app 2.3.3//EN
+            CALSCALE:GREGORIAN
+            VERSION:2.0
+            BEGIN:VEVENT
+            CREATED:20220209T154856Z
+            DTSTAMP:20220216T154904Z
+            LAST-MODIFIED:20220112T154904Z
+            SEQUENCE:4
+            UID:693bae92-5a23-410d-8ae1-a589d77e0844dada
+            DTSTART;VALUE=DATE:20220216
+            DTEND;VALUE=DATE:20220216
+            SUMMARY:NLP
+            END:VEVENT
+            END:VCALENDAR
+            """
             principal = self.client.principal()
             calendar = principal.calendars()[0]
-            calendar.save_event(created_ics)
+            calendar.save_event(this_ics)
             self.speak_dialog('add.si', data = {"name": summary, "date": nice_date_time(date)})
 
     @intent_file_handler('specific.si.intent')
