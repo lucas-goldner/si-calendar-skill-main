@@ -1,6 +1,6 @@
 from mycroft import MycroftSkill, intent_file_handler
-from mycroft.util.format import nice_time, nice_date, nice_date_time
-from mycroft.util.parse import extract_datetime, normalize
+from mycroft.util.format import nice_date, nice_date_time
+from mycroft.util.parse import extract_datetime
 from datetime import datetime, date
 import caldav
 import os

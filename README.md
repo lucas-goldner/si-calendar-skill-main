@@ -6,10 +6,10 @@ Connects to your calendar via caldav and let's you organize appointments.
 
 ## Examples
 * "What are my appointments today?"
-* "Calendar"
-
+* "Schedule"
+* "What is my next appointment"
 ## Credits
-adjustToAuthorsName
+Lucas Goldner, Moritz Parth, Lea Gutierrez
 
 ## Category
 **Productivity**
