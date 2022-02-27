@@ -39,7 +39,7 @@ class SiCalendar(MycroftSkill):
     def handle_multiple_si(self, message):
         appointments = self.fetch_events()
         #Filters for appointments that are sooner than the present date and orders them by occurence
-        sorted_appointments = sorted((d for d in appointments if d.get("date").day >= datetime.now().day), key=lambda d: d['date'])
+        sorted_appointments = sorted((d for d in appointments if d.get("date") >= datetime.now().date()), key=lambda d: d['date'])
 
         if(len(sorted_appointments) == 0):
             self.speak_dialog('no_appointment.si')
