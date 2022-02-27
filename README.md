@@ -1,5 +1,4 @@
 # <img src="https://raw.githack.com/FortAwesome/Font-Awesome/master/svgs/solid/calendar.svg" card_color="#22A7F0" width="50" height="50" style="vertical-align:bottom"/> Si Calendar
-Manages your calendar
 
 ## Installation
 - mycroft-msm install https://github.com/lucas-goldner/si-calendar-skill-main/
